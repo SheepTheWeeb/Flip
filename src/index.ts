@@ -1,31 +1,30 @@
-import DiscordJS, { Intents } from 'discord.js';
-import dotenv from 'dotenv';
-dotenv.config();
-
 // eslint-disable-next-line
 require('dotenv').config();
+import DiscordJS, { Intents } from 'discord.js';
+import MessageHandler from './handler/MessageHandler';
 
 const client = new DiscordJS.Client({
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES]
 });
-const PREFIX = process.env.DISCORD_PREFIX;
+const messageHandler: MessageHandler = new MessageHandler(
+  process.env.DISCORD_PREFIX || '!'
+);
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user?.tag}!`);
 });
 
 client.on('messageCreate', (msg) => {
-  if (msg.author.bot) {
-    return;
-  }
-
-  if (msg.content === 'hoi') {
-    msg.channel.send('hoi');
-    const salesMan = msg.guild?.emojis.cache.find(
-      (emoji) => emoji.name === 'salesman'
-    );
-    msg.react(salesMan || '👍');
-  }
+  messageHandler.handle(msg);
 });
 
 client.login(process.env.DISCORD_TOKEN);
+
+process.on('uncaughtException', (err: Error) => {
+  console.log(`Uncaught Exception: ${err.stack}`);
+  // process.exit(1) Best practice is to exit app on errors so that Docker can restart automatically
+});
+
+process.on('unhandledRejection', (err: Error) => {
+  console.log(`Unhandled rejection: ${err.stack}`);
+});

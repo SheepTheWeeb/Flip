@@ -7,7 +7,6 @@
     "start": "node build/index.js",
     "start:dev": "nodemon",
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint \"*/**/*.{js,ts}\" --quiet --fix"
   },
   "author": "Sheep",
