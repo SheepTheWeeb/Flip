@@ -2,6 +2,8 @@
 require('dotenv').config();
 import DiscordJS, { Intents } from 'discord.js';
 import MessageHandler from './handler/MessageHandler';
+import CommandService from './service/CommandService';
+import ICommandService from './service/ICommandService';
 
 const client = new DiscordJS.Client({
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES]
@@ -9,6 +11,9 @@ const client = new DiscordJS.Client({
 const messageHandler: MessageHandler = new MessageHandler(
   process.env.DISCORD_PREFIX || '!'
 );
+
+const commandService: ICommandService = new CommandService();
+export { commandService };
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user?.tag}!`);
