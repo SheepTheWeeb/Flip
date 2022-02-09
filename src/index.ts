@@ -1,6 +1,7 @@
 // eslint-disable-next-line
 require('dotenv').config();
-import DiscordJS, { Intents } from 'discord.js';
+import DiscordJS, { Intents, TextChannel } from 'discord.js';
+import cron from 'cron';
 import MessageHandler from './handler/MessageHandler';
 import CommandService from './service/CommandService';
 import ICommandService from './service/ICommandService';
@@ -15,8 +16,20 @@ const messageHandler: MessageHandler = new MessageHandler(
 const commandService: ICommandService = new CommandService();
 export { commandService };
 
+const dailyMessageTimer = new cron.CronJob('00 00 00 * * *', () => {
+  const channel = client.channels.cache.find(
+    (c) => c.id === '921520199780413551'
+  );
+  if (channel && channel.isText()) {
+    (channel as TextChannel).send(
+      '<@229163297411170305>, ga slapen! (Grote boos)'
+    );
+  }
+});
+
 client.on('ready', () => {
   console.log(`Logged in as ${client.user?.tag}!`);
+  dailyMessageTimer.start();
 });
 
 client.on('messageCreate', (msg) => {
