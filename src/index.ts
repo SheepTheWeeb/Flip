@@ -1,12 +1,18 @@
 // eslint-disable-next-line
 require('dotenv').config();
-import DiscordJS, { Intents } from 'discord.js';
+import DiscordJS, { GatewayIntentBits } from 'discord.js';
 import MessageHandler from './handler/MessageHandler';
 import CommandService from './service/CommandService';
 import ICommandService from './service/ICommandService';
 
 const client = new DiscordJS.Client({
-  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES]
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.DirectMessages,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildBans
+  ]
 });
 const messageHandler: MessageHandler = new MessageHandler(
   process.env.DISCORD_PREFIX || '!'
